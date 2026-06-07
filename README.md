@@ -3,7 +3,8 @@
 A beautifully animated, modern landing page for a fictional Chinese restaurant called **PAPITA**. Built with pure HTML, Tailwind CSS (CDN), and vanilla JavaScript — no build tools required.
 
 ![PAPITA Restaurant](https://images.unsplash.com/photo-1525755662778-989d0524087e?w=1200&q=80)
-
+## 🔴 Live Demo at:
+https://maq2008.github.io/papita-restaurant-landing-page/
 ## ✨ Features
 
 - 🎬 **Loading screen** with animated logo
