@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PAPITA — Authentic Chinese Cuisine | Since 2008</title>
+<meta name="description" content="PAPITA — Where tradition meets modern elegance. Experience authentic Chinese flavors crafted with passion." />
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
+
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<style>
+  :root {
+    --crimson: #C8102E;
+    --crimson-dark: #8B0000;
+    --gold: #D4AF37;
+    --gold-light: #E8C766;
+    --ink: #0a0a0a;
+    --cream: #FAF6EE;
+    --paper: #FFFCF5;
+  }
+
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: #1a1a1a;
+    overflow-x: hidden;
+  }
+
+  .font-serif-display { font-family: 'Playfair Display', serif; }
+  .font-cn { font-family: 'Noto Serif SC', serif; }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--crimson), var(--gold));
+    border-radius: 10px;
+  }
+
+  /* Loading Screen */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--ink);
+    z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1.5rem;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem; font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.5rem;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .loader-bar {
+    width: 200px; height: 2px;
+    background: rgba(212, 175, 55, 0.2);
+    overflow: hidden; position: relative;
+  }
+  .loader-bar::after {
+    content: ''; position: absolute; left: -50%; top: 0;
+    width: 50%; height: 100%;
+    background: var(--gold);
+    animation: slide 1.5s ease-in-out infinite;
+  }
+  @keyframes slide {
+    0% { left: -50%; } 100% { left: 100%; }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.98); }
+  }
+
+  /* Floating Chinese Characters Background */
+  .cn-float {
+    position: absolute;
+    font-family: 'Noto Serif SC', serif;
+    color: rgba(212, 175, 55, 0.08);
+    pointer-events: none; user-select: none;
+    animation: floatUp 20s linear infinite;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* Hero Section */
+  .hero {
+    position: relative; min-height: 100vh;
+    background:
+      linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.75)),
+      url('https://images.unsplash.com/photo-1525755662778-989d0524087e?w=1920&q=80') center/cover no-repeat;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.6) 100%);
+  }
+
+  .hero-title {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .hero-reveal {
+    overflow: hidden; display: inline-block;
+  }
+  .hero-reveal span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: reveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  }
+  @keyframes reveal {
+    to { transform: translateY(0); }
+  }
+
+  /* Sticky Navbar */
+  .navbar {
+    transition: all 0.4s ease;
+    backdrop-filter: blur(0px);
+  }
+  .navbar.scrolled {
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+    color: white; padding: 0.875rem 2.5rem;
+    border-radius: 9999px; font-weight: 600;
+    letter-spacing: 0.05em; transition: all 0.4s ease;
+    box-shadow: 0 10px 30px rgba(200, 16, 46, 0.3);
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .btn-primary:hover::before { transform: translateY(0); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-outline {
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    padding: 0.875rem 2.5rem;
+    border-radius: 9999px; font-weight: 600;
+    letter-spacing: 0.05em; transition: all 0.4s ease;
+    position: relative; overflow: hidden;
+  }
+  .btn-outline::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--gold);
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .btn-outline:hover::before { transform: translateX(0); }
+  .btn-outline:hover { color: var(--ink); }
+  .btn-outline span { position: relative; z-index: 1; }
+
+  /* Decorative divider */
+  .divider {
+    display: flex; align-items: center; gap: 1rem;
+    justify-content: center; margin: 1.5rem 0;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; max-width: 80px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  /* Menu Card */
+  .menu-card {
+    position: relative; overflow: hidden;
+    background: white; border-radius: 1rem;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  .menu-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+  }
+  .menu-card .img-wrap {
+    overflow: hidden; height: 220px; position: relative;
+  }
+  .menu-card img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .menu-card:hover img { transform: scale(1.15); }
+  .menu-card .badge {
+    position: absolute; top: 1rem; left: 1rem;
+    background: var(--crimson); color: white;
+    padding: 0.25rem 0.75rem; border-radius: 9999px;
+    font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .menu-card .price {
+    color: var(--crimson); font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 1.5rem;
+  }
+
+  /* Category Pills */
+  .cat-pill {
+    padding: 0.5rem 1.5rem; border-radius: 9999px;
+    font-weight: 500; transition: all 0.3s ease;
+    cursor: pointer; border: 1px solid #e5e5e5;
+  }
+  .cat-pill:hover, .cat-pill.active {
+    background: var(--ink); color: var(--gold);
+    border-color: var(--ink);
+  }
+
+  /* Stats Counter */
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+
+  /* Gallery hover */
+  .gallery-item {
+    overflow: hidden; border-radius: 1rem; position: relative;
+    cursor: pointer;
+  }
+  .gallery-item img {
+    transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .gallery-item:hover img { transform: scale(1.1); }
+  .gallery-item::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 50%);
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .gallery-item:hover::after { opacity: 1; }
+  .gallery-item .caption {
+    position: absolute; bottom: 1.5rem; left: 1.5rem;
+    color: white; z-index: 2;
+    transform: translateY(20px); opacity: 0;
+    transition: all 0.4s ease 0.1s;
+  }
+  .gallery-item:hover .caption { transform: translateY(0); opacity: 1; }
+
+  /* Testimonial */
+  .testimonial-card {
+    background: white; border-radius: 1.5rem; padding: 2.5rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    position: relative;
+  }
+  .testimonial-card::before {
+    content: '"'; position: absolute; top: -1rem; left: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem; color: var(--gold);
+    line-height: 1; opacity: 0.3;
+  }
+
+  /* Form */
+  .form-input {
+    width: 100%; padding: 1rem 1.25rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 0.5rem; color: white;
+    transition: all 0.3s ease;
+  }
+  .form-input:focus {
+    outline: none; border-color: var(--gold);
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+  }
+  .form-input::placeholder { color: rgba(255,255,255,0.5); }
+
+  /* Section Title Decoration */
+  .section-title {
+    position: relative; display: inline-block;
+  }
+  .section-title::after {
+    content: ''; position: absolute;
+    bottom: -0.5rem; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 3px;
+    background: linear-gradient(to right, var(--crimson), var(--gold));
+    border-radius: 2px;
+  }
+
+  /* Marquee */
+  .marquee {
+    overflow: hidden; white-space: nowrap;
+    background: var(--ink);
+    padding: 1rem 0;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  }
+  .marquee-inner {
+    display: inline-block;
+    animation: marquee 30s linear infinite;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Custom cursor */
+  .cursor-dot {
+    position: fixed; width: 8px; height: 8px;
+    background: var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed; width: 40px; height: 40px;
+    border: 1px solid var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 9997;
+    transition: all 0.2s ease;
+    mix-blend-mode: difference;
+  }
+
+  /* Mobile menu */
+  .mobile-menu {
+    transform: translateX(100%);
+    transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .mobile-menu.open { transform: translateX(0); }
+
+  /* Scroll progress */
+  #scroll-progress {
+    position: fixed; top: 0; left: 0;
+    height: 3px; background: linear-gradient(to right, var(--crimson), var(--gold));
+    z-index: 9996; width: 0%;
+    transition: width 0.1s ease;
+  }
+</style>
+</head>
+
+<body class="bg-[#FFFCF5]">
+
+<!-- Loading Screen -->
+<div id="loader">
+  <div class="loader-logo">PAPITA</div>
+  <div class="font-cn text-[var(--gold)] text-2xl tracking-widest">百喜</div>
+  <div class="loader-bar"></div>
+  <p class="text-white/60 text-sm tracking-widest uppercase mt-2">Preparing your experience</p>
+</div>
+
+<!-- Scroll Progress -->
+<div id="scroll-progress"></div>
+
+<!-- Custom Cursor -->
+<div class="cursor-dot hidden lg:block" id="cursor-dot"></div>
+<div class="cursor-ring hidden lg:block" id="cursor-ring"></div>
+
+<!-- Floating Chinese Characters -->
+<div id="cn-bg" class="fixed inset-0 pointer-events-none z-0"></div>
+
+<!-- Navbar -->
+<nav class="navbar fixed top-0 left-0 right-0 z-50 py-5 px-6 lg:px-12 text-white">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <a href="#home" class="flex items-center gap-3 group">
+      <div class="w-12 h-12 rounded-full border-2 border-[var(--gold)] flex items-center justify-center font-serif-display font-bold text-xl text-[var(--gold)] group-hover:bg-[var(--gold)] group-hover:text-[var(--ink)] transition-all duration-300">P</div>
+      <div>
+        <div class="font-serif-display text-2xl font-bold tracking-wider">PAPITA</div>
+        <div class="text-[10px] tracking-[0.3em] text-[var(--gold)] uppercase">Est. 2008</div>
+      </div>
+    </a>
+
+    <div class="hidden lg:flex items-center gap-8">
+      <a href="#home" class="text-sm font-medium hover:text-[var(--gold)] transition-colors relative group">
+        Home
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--gold)] group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a href="#about" class="text-sm font-medium hover:text-[var(--gold)] transition-colors relative group">
+        About
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--gold)] group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a href="#specialties" class="text-sm font-medium hover:text-[var(--gold)] transition-colors relative group">
+        Specialties
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--gold)] group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a href="#menu" class="text-sm font-medium hover:text-[var(--gold)] transition-colors relative group">
+        Menu
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--gold)] group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a href="#gallery" class="text-sm font-medium hover:text-[var(--gold)] transition-colors relative group">
+        Gallery
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--gold)] group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a href="#testimonials" class="text-sm font-medium hover:text-[var(--gold)] transition-colors relative group">
+        Reviews
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--gold)] group-hover:w-full transition-all duration-300"></span>
+      </a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a href="#reserve" class="hidden md:inline-block btn-primary text-sm">
+        <span class="flex items-center gap-2">
+          <i data-lucide="calendar-check" class="w-4 h-4"></i>
+          Reserve Table
+        </span>
+      </a>
+      <button id="menu-toggle" class="lg:hidden p-2">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="mobile-menu fixed top-0 right-0 w-80 h-full bg-[var(--ink)] z-[60] p-8 text-white">
+  <button id="close-menu" class="absolute top-6 right-6">
+    <i data-lucide="x" class="w-6 h-6"></i>
+  </button>
+  <div class="mt-16 flex flex-col gap-6">
+    <a href="#home" class="text-2xl font-serif-display hover:text-[var(--gold)] transition">Home</a>
+    <a href="#about" class="text-2xl font-serif-display hover:text-[var(--gold)] transition">About</a>
+    <a href="#specialties" class="text-2xl font-serif-display hover:text-[var(--gold)] transition">Specialties</a>
+    <a href="#menu" class="text-2xl font-serif-display hover:text-[var(--gold)] transition">Menu</a>
+    <a href="#gallery" class="text-2xl font-serif-display hover:text-[var(--gold)] transition">Gallery</a>
+    <a href="#testimonials" class="text-2xl font-serif-display hover:text-[var(--gold)] transition">Reviews</a>
+    <a href="#reserve" class="btn-primary inline-block text-center mt-4">
+      <span>Reserve Table</span>
+    </a>
+  </div>
+</div>
+
+<!-- Hero -->
+<section id="home" class="hero">
+  <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+    <div class="hero-reveal mb-4">
+      <span style="animation-delay: 0.2s;" class="font-cn text-[var(--gold)] text-2xl md:text-3xl tracking-[0.5em]">百 喜 楼</span>
+    </div>
+
+    <h1 class="font-serif-display font-bold text-6xl md:text-8xl lg:text-9xl mb-6 leading-none">
+      <span class="hero-reveal block"><span style="animation-delay: 0.4s;" class="hero-title">PAPITA</span></span>
+    </h1>
+
+    <div class="hero-reveal mb-8">
+      <span style="animation-delay: 0.7s;" class="text-xl md:text-2xl text-white/90 font-light tracking-widest uppercase">
+        Authentic Chinese Cuisine
+      </span>
+    </div>
+
+    <div class="divider hero-reveal">
+      <span style="animation-delay: 0.9s;" class="text-[var(--gold)] text-sm tracking-[0.4em]">SINCE 2008</span>
+    </div>
+
+    <p class="hero-reveal text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed">
+      Where centuries-old Chinese culinary traditions meet modern elegance. Every dish tells a story.
+    </p>
+
+    <div class="hero-reveal flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <span style="animation-delay: 1.1s;">
+        <a href="#menu" class="btn-primary inline-block">
+          <span class="flex items-center gap-2">
+            Explore Menu
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </span>
+        </a>
+      </span>
+      <span style="animation-delay: 1.2s;">
+        <a href="#reserve" class="btn-outline inline-block">
+          <span>Book a Table</span>
+        </a>
+      </span>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 flex flex-col items-center gap-2 animate-bounce">
+    <span class="text-xs tracking-widest uppercase">Scroll</span>
+    <i data-lucide="chevron-down" class="w-5 h-5"></i>
+  </div>
+</section>
+
+<!-- Marquee Strip -->
+<div class="marquee">
+  <div class="marquee-inner text-[var(--gold)] text-sm tracking-[0.4em] uppercase font-medium">
+    <span class="mx-8">★ Authentic Sichuan Flavors</span>
+    <span class="mx-8">★ Hand-Pulled Noodles</span>
+    <span class="mx-8">★ Dim Sum Master Chefs</span>
+    <span class="mx-8">★ Family Recipes Since 2008</span>
+    <span class="mx-8">★ Farm-Fresh Ingredients</span>
+    <span class="mx-8">★ Authentic Sichuan Flavors</span>
+    <span class="mx-8">★ Hand-Pulled Noodles</span>
+    <span class="mx-8">★ Dim Sum Master Chefs</span>
+    <span class="mx-8">★ Family Recipes Since 2008</span>
+    <span class="mx-8">★ Farm-Fresh Ingredients</span>
+  </div>
+</div>
+
+<!-- About Section -->
+<section id="about" class="py-24 lg:py-32 px-6 bg-[var(--cream)]">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+    <div data-aos="fade-right" data-aos-duration="1000">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=900&q=80" alt="Restaurant interior" class="rounded-2xl shadow-2xl w-full h-[500px] object-cover">
+        <div class="absolute -bottom-8 -right-8 bg-[var(--ink)] text-white p-8 rounded-2xl shadow-2xl max-w-xs hidden md:block">
+          <div class="font-serif-display text-5xl font-bold text-[var(--gold)] mb-2">15+</div>
+          <p class="text-sm tracking-widest uppercase">Years of Culinary Excellence</p>
+        </div>
+        <div class="absolute -top-6 -left-6 w-32 h-32 border-2 border-[var(--crimson)] rounded-2xl -z-10"></div>
+      </div>
+    </div>
+
+    <div data-aos="fade-left" data-aos-duration="1000">
+      <div class="text-[var(--crimson)] text-sm tracking-[0.3em] uppercase font-semibold mb-4">Our Story</div>
+      <h2 class="font-serif-display text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+        A Legacy of <span class="italic text-[var(--crimson)]">Flavor</span> & Tradition
+      </h2>
+      <p class="text-lg text-gray-700 leading-relaxed mb-6">
+        PAPITA was born from a simple dream — to bring the authentic flavors of China's diverse regional cuisines to your table. Our master chefs, trained in Beijing and Sichuan, have perfected recipes passed down through five generations.
+      </p>
+      <p class="text-lg text-gray-700 leading-relaxed mb-8">
+        From the fiery depths of Sichuan to the delicate artistry of Cantonese dim sum, every dish at PAPITA is a celebration of Chinese culinary heritage, crafted with the freshest ingredients and served with love.
+      </p>
+
+      <div class="grid grid-cols-2 gap-6">
+        <div class="flex items-start gap-3">
+          <div class="w-12 h-12 rounded-full bg-[var(--crimson)]/10 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="chef-hat" class="w-6 h-6 text-[var(--crimson)]"></i>
+          </div>
+          <div>
+            <h4 class="font-bold mb-1">Master Chefs</h4>
+            <p class="text-sm text-gray-600">Trained in Beijing & Sichuan</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-12 h-12 rounded-full bg-[var(--crimson)]/10 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="leaf" class="w-6 h-6 text-[var(--crimson)]"></i>
+          </div>
+          <div>
+            <h4 class="font-bold mb-1">Fresh Daily</h4>
+            <p class="text-sm text-gray-600">Farm-to-table ingredients</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-12 h-12 rounded-full bg-[var(--crimson)]/10 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="flame" class="w-6 h-6 text-[var(--crimson)]"></i>
+          </div>
+          <div>
+            <h4 class="font-bold mb-1">Wok Hei</h4>
+            <p class="text-sm text-gray-600">Authentic flame-kissed flavor</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-12 h-12 rounded-full bg-[var(--crimson)]/10 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="heart" class="w-6 h-6 text-[var(--crimson)]"></i>
+          </div>
+          <div>
+            <h4 class="font-bold mb-1">Made with Love</h4>
+            <p class="text-sm text-gray-600">Family recipes, perfected</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Specialties -->
+<section id="specialties" class="py-24 lg:py-32 px-6 bg-[var(--ink)] text-white relative overflow-hidden">
+  <div class="absolute top-0 right-0 font-cn text-[20rem] text-[var(--gold)] opacity-5 leading-none select-none">味</div>
+  <div class="absolute bottom-0 left-0 font-cn text-[15rem] text-[var(--crimson)] opacity-5 leading-none select-none">香</div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="text-[var(--gold)] text-sm tracking-[0.3em] uppercase font-semibold mb-4">Chef's Signature</div>
+      <h2 class="font-serif-display text-5xl lg:text-6xl font-bold mb-4">
+        Our <span class="italic text-[var(--gold)]">Specialties</span>
+      </h2>
+      <p class="text-white/70 text-lg max-w-2xl mx-auto">Handcrafted dishes that have made PAPITA a legendary destination for Chinese cuisine lovers.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div data-aos="fade-up" data-aos-delay="100" class="group relative overflow-hidden rounded-2xl cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80" alt="Peking Duck" class="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-6">
+          <div class="text-[var(--gold)] text-xs tracking-widest uppercase mb-2">Signature</div>
+          <h3 class="font-serif-display text-2xl font-bold mb-2">Peking Duck</h3>
+          <p class="text-white/70 text-sm">Crispy skin, tender meat, served with traditional pancakes</p>
+        </div>
+        <div class="absolute top-4 right-4 w-12 h-12 rounded-full bg-[var(--crimson)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:rotate-45">
+          <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <div data-aos="fade-up" data-aos-delay="200" class="group relative overflow-hidden rounded-2xl cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&q=80" alt="Mapo Tofu" class="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-6">
+          <div class="text-[var(--gold)] text-xs tracking-widest uppercase mb-2">Sichuan</div>
+          <h3 class="font-serif-display text-2xl font-bold mb-2">Mapo Tofu</h3>
+          <p class="text-white/70 text-sm">Silken tofu in spicy Sichuan chili bean sauce</p>
+        </div>
+        <div class="absolute top-4 right-4 w-12 h-12 rounded-full bg-[var(--crimson)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:rotate-45">
+          <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <div data-aos="fade-up" data-aos-delay="300" class="group relative overflow-hidden rounded-2xl cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=600&q=80" alt="Dim Sum" class="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-6">
+          <div class="text-[var(--gold)] text-xs tracking-widest uppercase mb-2">Cantonese</div>
+          <h3 class="font-serif-display text-2xl font-bold mb-2">Dim Sum Platter</h3>
+          <p class="text-white/70 text-sm">Hand-folded dumplings, steamed to perfection</p>
+        </div>
+        <div class="absolute top-4 right-4 w-12 h-12 rounded-full bg-[var(--crimson)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:rotate-45">
+          <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <div data-aos="fade-up" data-aos-delay="400" class="group relative overflow-hidden rounded-2xl cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&q=80" alt="Kung Pao" class="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-110">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-6">
+          <div class="text-[var(--gold)] text-xs tracking-widest uppercase mb-2">Classic</div>
+          <h3 class="font-serif-display text-2xl font-bold mb-2">Kung Pao Chicken</h3>
+          <p class="text-white/70 text-sm">Wok-tossed with peanuts & dried chilies</p>
+        </div>
+        <div class="absolute top-4 right-4 w-12 h-12 rounded-full bg-[var(--crimson)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:rotate-45">
+          <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Menu Section -->
+<section id="menu" class="py-24 lg:py-32 px-6 bg-[var(--cream)]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12" data-aos="fade-up">
+      <div class="text-[var(--crimson)] text-sm tracking-[0.3em] uppercase font-semibold mb-4">Our Menu</div>
+      <h2 class="font-serif-display text-5xl lg:text-6xl font-bold mb-4">
+        Authentic <span class="italic text-[var(--crimson)]">Chinese</span> Delicacies
+      </h2>
+      <p class="text-gray-600 text-lg max-w-2xl mx-auto">Explore our handcrafted menu featuring the finest Chinese dishes from across the regions.</p>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="flex flex-wrap justify-center gap-3 mb-12" data-aos="fade-up" data-aos-delay="100">
+      <button class="cat-pill active" data-cat="all">All</button>
+      <button class="cat-pill" data-cat="appetizer">Appetizers</button>
+      <button class="cat-pill" data-cat="soup">Soups</button>
+      <button class="cat-pill" data-cat="main">Main Course</button>
+      <button class="cat-pill" data-cat="rice">Rice & Noodles</button>
+      <button class="cat-pill" data-cat="dessert">Desserts</button>
+    </div>
+
+    <!-- Menu Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="menu-grid">
+
+      <!-- Appetizers -->
+      <div class="menu-card" data-aos="fade-up" data-cat="appetizer">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1625938145744-e380515399b7?w=600&q=80" alt="Spring Rolls">
+          <span class="badge">Chef's Pick</span>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Crispy Spring Rolls</h3>
+            <span class="price">$8</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Golden fried rolls stuffed with vegetables, served with sweet chili sauce</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="flame" class="w-3 h-3"></i>
+            VEGETARIAN
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="100" data-cat="appetizer">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?w=600&q=80" alt="Dim Sum">
+          <span class="badge">Popular</span>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Steamed Dim Sum</h3>
+            <span class="price">$12</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Assorted steamed dumplings with pork, shrimp, and vegetables</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="star" class="w-3 h-3"></i>
+            SIGNATURE
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="200" data-cat="appetizer">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80" alt="Manchurian">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Vegetable Manchurian</h3>
+            <span class="price">$10</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Crispy veg balls tossed in spicy Indo-Chinese manchurian sauce</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="flame" class="w-3 h-3"></i>
+            SPICY
+          </div>
+        </div>
+      </div>
+
+      <!-- Soups -->
+      <div class="menu-card" data-aos="fade-up" data-cat="soup">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" alt="Hot Sour Soup">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Hot & Sour Soup</h3>
+            <span class="price">$7</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Traditional Sichuan soup with mushrooms, tofu, bamboo & chili</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="flame" class="w-3 h-3"></i>
+            SPICY
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="100" data-cat="soup">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1604908554049-19b95a8d8b78?w=600&q=80" alt="Wonton Soup">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Wonton Soup</h3>
+            <span class="price">$8</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Delicate pork wontons in clear chicken broth with greens</p>
+          <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold tracking-wider">
+            <i data-lucide="heart" class="w-3 h-3"></i>
+            COMFORT
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Course -->
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="200" data-cat="main">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&q=80" alt="Kung Pao">
+          <span class="badge">Bestseller</span>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Kung Pao Chicken</h3>
+            <span class="price">$16</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Wok-tossed chicken with peanuts, dried chilies, and Sichuan peppercorns</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="flame" class="w-3 h-3"></i>
+            SPICY
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-cat="main">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&q=80" alt="Mapo Tofu">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Sichuan Mapo Tofu</h3>
+            <span class="price">$14</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Silken tofu in fiery chili bean sauce with minced pork</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="flame" class="w-3 h-3"></i>
+            EXTRA SPICY
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="100" data-cat="main">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80" alt="Peking Duck">
+          <span class="badge">Premium</span>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Peking Duck</h3>
+            <span class="price">$38</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Whole roasted duck with crispy skin, pancakes, hoisin & scallions</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--gold)] font-semibold tracking-wider">
+            <i data-lucide="crown" class="w-3 h-3"></i>
+            SIGNATURE
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="200" data-cat="main">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1632789395770-20e6f63be806?w=600&q=80" alt="Sweet Sour">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Sweet & Sour Chicken</h3>
+            <span class="price">$15</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Crispy chicken pieces in tangy sweet & sour sauce with bell peppers</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="heart" class="w-3 h-3"></i>
+            FAMILY FAVORITE
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-cat="main">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=600&q=80" alt="Chili Paneer">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Chili Paneer</h3>
+            <span class="price">$14</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Crispy paneer cubes tossed with onions, peppers in spicy chili sauce</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="flame" class="w-3 h-3"></i>
+            SPICY
+          </div>
+        </div>
+      </div>
+
+      <!-- Rice & Noodles -->
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="100" data-cat="rice">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80" alt="Fried Rice">
+          <span class="badge">Popular</span>
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Yangzhou Fried Rice</h3>
+            <span class="price">$13</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Wok-fried rice with shrimp, char siu, eggs, scallions & soy</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="star" class="w-3 h-3"></i>
+            CLASSIC
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="200" data-cat="rice">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&q=80" alt="Chow Mein">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Hakka Chow Mein</h3>
+            <span class="price">$14</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Stir-fried noodles with vegetables, choice of chicken or shrimp</p>
+          <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold tracking-wider">
+            <i data-lucide="users" class="w-3 h-3"></i>
+            CROWD PLEASER
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="100" data-cat="rice">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=600&q=80" alt="Dan Dan Noodles">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Dan Dan Noodles</h3>
+            <span class="price">$15</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Hand-pulled noodles in spicy sesame sauce with minced pork</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="flame" class="w-3 h-3"></i>
+            SPICY
+          </div>
+        </div>
+      </div>
+
+      <!-- Desserts -->
+      <div class="menu-card" data-aos="fade-up" data-aos-delay="200" data-cat="dessert">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&q=80" alt="Mango Pudding">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Mango Pudding</h3>
+            <span class="price">$6</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Silky smooth mango pudding with fresh mango cubes & coconut</p>
+          <div class="flex items-center gap-2 text-xs text-gray-500 font-semibold tracking-wider">
+            <i data-lucide="heart" class="w-3 h-3"></i>
+            REFRESHING
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" data-aos="fade-up" data-cat="dessert">
+        <div class="img-wrap">
+          <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600&q=80" alt="Fried Ice Cream">
+        </div>
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-serif-display text-xl font-bold">Fried Ice Cream</h3>
+            <span class="price">$8</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-3">Crispy tempura-coated vanilla ice cream with honey drizzle</p>
+          <div class="flex items-center gap-2 text-xs text-[var(--crimson)] font-semibold tracking-wider">
+            <i data-lucide="star" class="w-3 h-3"></i>
+            UNIQUE
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-center mt-12" data-aos="fade-up">
+      <a href="#" class="btn-primary inline-block">
+        <span class="flex items-center gap-2">
+          View Full Menu
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="py-20 bg-[var(--ink)] text-white relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, var(--gold) 1px, transparent 0); background-size: 40px 40px;"></div>
+  </div>
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="text-center" data-aos="fade-up">
+        <div class="stat-num" data-target="15">0</div>
+        <div class="text-sm text-white/60 tracking-widest uppercase mt-2">Years of Service</div>
+      </div>
+      <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-num" data-target="85">0</div>
+        <div class="text-sm text-white/60 tracking-widest uppercase mt-2">Signature Dishes</div>
+      </div>
+      <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-num" data-target="50">0</div>
+        <div class="text-sm text-white/60 tracking-widest uppercase mt-2">Master Chefs</div>
+      </div>
+      <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+        <div class="stat-num" data-target="25">0</div>
+        <div class="text-sm text-white/60 tracking-widest uppercase mt-2">Awards Won</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section id="gallery" class="py-24 lg:py-32 px-6 bg-[var(--paper)]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="text-[var(--crimson)] text-sm tracking-[0.3em] uppercase font-semibold mb-4">Gallery</div>
+      <h2 class="font-serif-display text-5xl lg:text-6xl font-bold mb-4">
+        A Feast for <span class="italic text-[var(--crimson)]">Your Eyes</span>
+      </h2>
+      <p class="text-gray-600 text-lg">A glimpse into the PAPITA experience</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" data-aos="fade-up">
+      <div class="gallery-item col-span-2 row-span-2 h-96 md:h-full">
+        <img src="https://images.unsplash.com/photo-1579027989536-b7b1f875659b?w=800&q=80" alt="Restaurant">
+        <div class="caption">
+          <div class="text-[var(--gold)] text-xs tracking-widest uppercase">Ambiance</div>
+          <h3 class="font-serif-display text-2xl font-bold">Elegant Dining</h3>
+        </div>
+      </div>
+      <div class="gallery-item h-48 md:h-56">
+        <img src="https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&q=80" alt="Dish">
+        <div class="caption">
+          <div class="text-[var(--gold)] text-xs tracking-widest">Wok Hei</div>
+          <h3 class="font-serif-display text-lg font-bold">Flame-Kissed</h3>
+        </div>
+      </div>
+      <div class="gallery-item h-48 md:h-56">
+        <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80" alt="Dish">
+        <div class="caption">
+          <div class="text-[var(--gold)] text-xs tracking-widest">Dim Sum</div>
+          <h3 class="font-serif-display text-lg font-bold">Handcrafted</h3>
+        </div>
+      </div>
+      <div class="gallery-item h-48 md:h-56">
+        <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&q=80" alt="Interior">
+        <div class="caption">
+          <div class="text-[var(--gold)] text-xs tracking-widest">Interior</div>
+          <h3 class="font-serif-display text-lg font-bold">Cozy Corners</h3>
+        </div>
+      </div>
+      <div class="gallery-item h-48 md:h-56">
+        <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=600&q=80" alt="Dish">
+        <div class="caption">
+          <div class="text-[var(--gold)] text-xs tracking-widest">Chef's Art</div>
+          <h3 class="font-serif-display text-lg font-bold">Plated with Love</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section id="testimonials" class="py-24 lg:py-32 px-6 bg-[var(--cream)]">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <div class="text-[var(--crimson)] text-sm tracking-[0.3em] uppercase font-semibold mb-4">Reviews</div>
+      <h2 class="font-serif-display text-5xl lg:text-6xl font-bold mb-4">
+        What Our <span class="italic text-[var(--crimson)]">Guests</span> Say
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="testimonial-card" data-aos="fade-up">
+        <div class="flex gap-1 mb-4 text-[var(--gold)]">
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+        </div>
+        <p class="text-gray-700 mb-6 leading-relaxed">"The most authentic Chinese food I've had outside of Beijing. The Peking Duck is absolutely divine. The ambiance transports you straight to China."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--crimson)] to-[var(--gold)] flex items-center justify-center text-white font-bold">SM</div>
+          <div>
+            <div class="font-bold">Sarah Mitchell</div>
+            <div class="text-sm text-gray-500">Food Critic</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="flex gap-1 mb-4 text-[var(--gold)]">
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+        </div>
+        <p class="text-gray-700 mb-6 leading-relaxed">"Family dinners here have become our tradition. The staff remembers our names, and the dim sum is freshly made every morning. Truly special."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--crimson)] to-[var(--gold)] flex items-center justify-center text-white font-bold">JC</div>
+          <div>
+            <div class="font-bold">James Chen</div>
+            <div class="text-sm text-gray-500">Regular Guest</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex gap-1 mb-4 text-[var(--gold)]">
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+          <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+        </div>
+        <p class="text-gray-700 mb-6 leading-relaxed">"The Mapo Tofu has the perfect balance of spice and numbing Sichuan flavor. PAPITA is hands down the best Chinese restaurant in the city."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--crimson)] to-[var(--gold)] flex items-center justify-center text-white font-bold">AP</div>
+          <div>
+            <div class="font-bold">Aisha Patel</div>
+            <div class="text-sm text-gray-500">Chef & Blogger</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reservation -->
+<section id="reserve" class="py-24 lg:py-32 px-6 bg-[var(--ink)] text-white relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-96 h-96 bg-[var(--crimson)] rounded-full blur-3xl opacity-20"></div>
+  <div class="absolute bottom-0 left-0 w-96 h-96 bg-[var(--gold)] rounded-full blur-3xl opacity-10"></div>
+
+  <div class="max-w-5xl mx-auto relative z-10">
+    <div class="text-center mb-12" data-aos="fade-up">
+      <div class="text-[var(--gold)] text-sm tracking-[0.3em] uppercase font-semibold mb-4">Reservation</div>
+      <h2 class="font-serif-display text-5xl lg:text-6xl font-bold mb-4">
+        Reserve Your <span class="italic text-[var(--gold)]">Table</span>
+      </h2>
+      <p class="text-white/70 text-lg">Join us for an unforgettable dining experience</p>
+    </div>
+
+    <form class="grid md:grid-cols-2 gap-6" data-aos="fade-up" data-aos-delay="100">
+      <input type="text" placeholder="Your Name" class="form-input" required>
+      <input type="email" placeholder="Email Address" class="form-input" required>
+      <input type="tel" placeholder="Phone Number" class="form-input" required>
+      <input type="number" placeholder="Number of Guests" min="1" max="20" class="form-input" required>
+      <input type="date" class="form-input" required>
+      <input type="time" class="form-input" required>
+      <textarea placeholder="Special Requests (Optional)" rows="4" class="form-input md:col-span-2"></textarea>
+      <div class="md:col-span-2 text-center mt-4">
+        <button type="submit" class="btn-primary">
+          <span class="flex items-center gap-2">
+            Confirm Reservation
+            <i data-lucide="check" class="w-4 h-4"></i>
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-black text-white pt-16 pb-8 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid md:grid-cols-4 gap-12 mb-12">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-14 h-14 rounded-full border-2 border-[var(--gold)] flex items-center justify-center font-serif-display font-bold text-2xl text-[var(--gold)]">P</div>
+          <div>
+            <div class="font-serif-display text-3xl font-bold tracking-wider">PAPITA</div>
+            <div class="text-xs tracking-[0.3em] text-[var(--gold)] uppercase">Authentic Chinese</div>
+          </div>
+        </div>
+        <p class="text-white/60 leading-relaxed max-w-md mb-6">
+          Bringing the authentic flavors of China to your table since 2008. Every dish is a celebration of tradition, crafted with passion by our master chefs.
+        </p>
+        <div class="flex gap-3">
+          <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-[var(--crimson)] hover:border-[var(--crimson)] transition-all">
+            <i data-lucide="facebook" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-[var(--crimson)] hover:border-[var(--crimson)] transition-all">
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-[var(--crimson)] hover:border-[var(--crimson)] transition-all">
+            <i data-lucide="twitter" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-[var(--crimson)] hover:border-[var(--crimson)] transition-all">
+            <i data-lucide="youtube" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-serif-display text-xl font-bold mb-4 text-[var(--gold)]">Visit Us</h4>
+        <ul class="space-y-3 text-white/60 text-sm">
+          <li class="flex items-start gap-2">
+            <i data-lucide="map-pin" class="w-4 h-4 mt-1 text-[var(--crimson)] flex-shrink-0"></i>
+            123 China Town Avenue<br>Downtown District
+          </li>
+          <li class="flex items-center gap-2">
+            <i data-lucide="phone" class="w-4 h-4 text-[var(--crimson)]"></i>
+            +1 (555) 123-4567
+          </li>
+          <li class="flex items-center gap-2">
+            <i data-lucide="mail" class="w-4 h-4 text-[var(--crimson)]"></i>
+            hello@papita.com
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-serif-display text-xl font-bold mb-4 text-[var(--gold)]">Hours</h4>
+        <ul class="space-y-3 text-white/60 text-sm">
+          <li class="flex justify-between">
+            <span>Mon - Thu</span>
+            <span class="text-white">11am - 10pm</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Fri - Sat</span>
+            <span class="text-white">11am - 11pm</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Sunday</span>
+            <span class="text-white">12pm - 9pm</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-white/40 text-sm">
+      <p>© 2024 PAPITA Restaurant. All rights reserved.</p>
+      <p>Crafted with <i data-lucide="heart" class="w-3 h-3 inline text-[var(--crimson)] fill-current"></i> for food lovers</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Initialize AOS
+  AOS.init({
+    duration: 800,
+    easing: 'ease-out-cubic',
+    once: true,
+    offset: 80
+  });
+
+  // Initialize Lucide Icons
+  lucide.createIcons();
+
+  // Loading screen
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+    }, 1500);
+  });
+
+  // Navbar scroll effect
+  const navbar = document.querySelector('.navbar');
+  const scrollProgress = document.getElementById('scroll-progress');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+
+    // Scroll progress
+    const winHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (window.scrollY / winHeight) * 100;
+    scrollProgress.style.width = progress + '%';
+  });
+
+  // Mobile menu
+  const menuToggle = document.getElementById('menu-toggle');
+  const closeMenu = document.getElementById('close-menu');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuToggle.addEventListener('click', () => mobileMenu.classList.add('open'));
+  closeMenu.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+
+  // Menu filter
+  const catPills = document.querySelectorAll('.cat-pill');
+  const menuCards = document.querySelectorAll('.menu-card');
+
+  catPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      catPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+
+      const cat = pill.dataset.cat;
+      menuCards.forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.style.display = 'block';
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, 50);
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Stats counter
+  const counters = document.querySelectorAll('.stat-num');
+  const speed = 50;
+  let counted = false;
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !counted) {
+        counted = true;
+        counters.forEach(counter => {
+          const target = +counter.dataset.target;
+          const increment = target / speed;
+          let current = 0;
+
+          const update = () => {
+            current += increment;
+            if (current < target) {
+              counter.innerText = Math.ceil(current) + '+';
+              requestAnimationFrame(update);
+            } else {
+              counter.innerText = target + '+';
+            }
+          };
+          update();
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(counter => counterObserver.observe(counter.parentElement));
+
+  // Floating Chinese characters
+  const cnChars = ['福', '寿', '喜', '禄', '味', '香', '美', '佳', '宴', '龙', '凤', '春'];
+  const cnBg = document.getElementById('cn-bg');
+
+  function createCNChar() {
+    const char = document.createElement('div');
+    char.className = 'cn-float';
+    char.textContent = cnChars[Math.floor(Math.random() * cnChars.length)];
+    char.style.left = Math.random() * 100 + 'vw';
+    char.style.fontSize = (Math.random() * 80 + 60) + 'px';
+    char.style.animationDuration = (Math.random() * 15 + 20) + 's';
+    char.style.animationDelay = Math.random() * 5 + 's';
+    cnBg.appendChild(char);
+
+    setTimeout(() => char.remove(), 40000);
+  }
+
+  // Create initial chars
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => createCNChar(), i * 1000);
+  }
+  setInterval(createCNChar, 4000);
+
+  // Custom cursor
+  const cursorDot = document.getElementById('cursor-dot');
+  const cursorRing = document.getElementById('cursor-ring');
+
+  if (window.innerWidth > 1024) {
+    document.addEventListener('mousemove', (e) => {
+      cursorDot.style.left = e.clientX - 4 + 'px';
+      cursorDot.style.top = e.clientY - 4 + 'px';
+      cursorRing.style.left = e.clientX - 20 + 'px';
+      cursorRing.style.top = e.clientY - 20 + 'px';
+    });
+
+    document.querySelectorAll('a, button, .menu-card, .gallery-item').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorRing.style.transform = 'scale(1.5)';
+        cursorRing.style.borderColor = 'var(--crimson)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorRing.style.transform = 'scale(1)';
+        cursorRing.style.borderColor = 'var(--gold)';
+      });
+    });
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Form submission
+  document.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Thank you! Your reservation request has been received. We will contact you shortly to confirm. 🥢');
+    e.target.reset();
+  });
+</script>
+
+</body>
+</html>

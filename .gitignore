@@ -1,0 +1,22 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Node / Build (future-proof)
+node_modules/
+dist/
+.env
+.env.local
+
+# OS junk
+desktop.ini
+$RECYCLE.BIN/
