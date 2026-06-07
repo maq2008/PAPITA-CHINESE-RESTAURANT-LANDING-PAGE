@@ -4,7 +4,7 @@ A beautifully animated, modern landing page for a fictional Chinese restaurant c
 
 ![PAPITA Restaurant](https://images.unsplash.com/photo-1525755662778-989d0524087e?w=1200&q=80)
 ## 🔴 Live Demo at:
-https://maq2008.github.io/papita-restaurant-landing-page/
+https://maq2008.github.io/PAPITA-CHINESE-RESTAURANT-LANDING-PAGE/
 ## ✨ Features
 
 - 🎬 **Loading screen** with animated logo
