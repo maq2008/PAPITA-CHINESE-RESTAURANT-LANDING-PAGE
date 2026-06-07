@@ -60,20 +60,6 @@ Just open `index.html` in any modern browser. No build step needed!
 start index.html
 ```
 
-## 🍽️ Featured Chinese Dishes
-
-- 🦆 Peking Duck (Signature)
-- 🌶️ Sichuan Mapo Tofu
-- 🥟 Dim Sum Platter
-- 🥜 Kung Pao Chicken
-- 🍜 Hakka Chow Mein
-- 🍚 Yangzhou Fried Rice
-- 🌶️ Chili Paneer
-- 🍢 Crispy Spring Rolls
-- 🥣 Hot & Sour Soup
-- 🥭 Mango Pudding
-- ...and more!
-
 ## 📜 License
 
 This is a portfolio/demo project. Feel free to use as inspiration for your own restaurant websites.
